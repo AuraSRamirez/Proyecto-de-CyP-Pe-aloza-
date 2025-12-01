@@ -137,8 +137,65 @@ void	Diccionario(char* szNombre, char szPalabras[NUMPALABRAS][TAMTOKEN], int iEs
     */
     //Sustituya estas lineas por su código
     /*
-    * 
-    * 3
+    * 4*/
+    iNumElementos = 1;
+    strcpy(szPalabras[0], "AquiVaElDiccionario");
+    iEstadisticas[0] = 1; // la primer palabra aparece solo una vez.
+    */
+}
+
+/*****************************************************************************************************************
+    ListaCandidatas: Esta funcion recupera desde el diccionario las palabras validas y su peso
+    Regresa las palabras ordenadas por su peso
+    char	szPalabrasSugeridas[][TAMTOKEN],	//Lista de palabras clonadas
+    int		iNumSugeridas,						//Lista de palabras clonadas
+    char	szPalabras[][TAMTOKEN],				//Lista de palabras del diccionario
+    int		iEstadisticas[],					//Lista de las frecuencias de las palabras
+    int		iNumElementos,						//Numero de elementos en el diccionario
+    char	szListaFinal[][TAMTOKEN],			//Lista final de palabras a sugerir
+    int		iPeso[],							//Peso de las palabras en la lista final
+    int &	iNumLista)							//Numero de elementos en la szListaFinal
+******************************************************************************************************************/
+void	ListaCandidatas(
+    char	szPalabrasSugeridas[NUMPALABRAS][TAMTOKEN],	//Lista de palabras clonadas
+    int		iNumSugeridas,						//Lista de palabras clonadas
+    char	szPalabras[NUMPALABRAS][TAMTOKEN],				//Lista de palabras del diccionario
+    int		iEstadisticas[NUMPALABRAS],					//Lista de las frecuencias de las palabras
+    int		iNumElementos,						//Numero de elementos en el diccionario
+    char	szListaFinal[NUMPALABRAS][TAMTOKEN],			//Lista final de palabras a sugerir
+    int		iPeso[NUMPALABRAS],							//Peso de las palabras en la lista final
+    int& iNumLista)							//Numero de elementos en la szListaFinal
+{
+    int iControl, n, i, j, k;
+    char szPalabra[TAMTOKEN];
+    int iNumRep, iNumSNeto, bLogrep;
+    int m_a[NUMPALABRAS];
+    char szSuggest[NUMPALABRAS][TAMTOKEN];
+
+    iNumLista = 0;
+
+    /* Ordenar Resultados */
+    iNumRep = 0;
+    iNumSNeto = 0;
+    bLogrep = 0;
+    /*  Buscar repetidos, llenar la cadena sin dichos términos y contar el total de términos   */
+
+    for (i = 0; i < iNumSugeridas; i++)//Bucle for que va de 0 (el primer valor de un arreglo) al numero total de elementos
+    {
+        //Evaluador de términos repetidos en el bucle local
+        for (n = 0; n < iNumRep; n++)//Bucle for de 0 al número de términos repetidos
+        {                                       //Nos permite agilizar y hacer eficiente la busqueda de términos iguales
+            if (i == m_a[n])//En caso de que se repitan
+            {
+                bLogrep = bLogrep + 1;//bLog_rep es la variable que va de 0 a 1 y nos indica si hay terminos reoetidos
+                n = iNumRep;//al detectar que el término evaluado en el for global es un termino repetido detiene el bucle local
+            }
+            else
+                bLogrep = 0;
+        }
+    /*5 */
+
+    /* 3
     */
         else
         {
