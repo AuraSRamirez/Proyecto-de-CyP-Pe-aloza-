@@ -194,7 +194,161 @@ void	ListaCandidatas(
                 bLogrep = 0;
         }
     /*5 */
+ //El código solo va a modificar valores cuando estos no se repitan
+        if (bLogrep == 0)//==0 indica que el valor con posición del contador global no es repetido
+        {
 
+            //Compara el término en la posición de la variable local con todos los demás del arreglo
+            for (n = i + 1; n < iNumSugeridas; n++)//bucle que va de el término en variable global +1 al numero total de terminos
+            {                                         //de esta manera evitamos volver a evaluar términos  
+
+                if ((strcmp(szPalabrasSugeridas[i], szPalabrasSugeridas[n]) == 0))//En caso de que ambos términos seain iguales
+                {
+                    m_a[iNumRep] = n;//se guarda la posición del termino repetido en el arreglo maestro
+                    iNumRep = iNumRep + 1;//variable que guarda la cantidad de terminos repetidos
+                }
+            }
+            strcpy_s(szSuggest[iNumSNeto], szPalabrasSugeridas[i]);
+            iNumSNeto = iNumSNeto + 1;//Lleva la cuenta de los términos
+        }
+    }
+
+    /*  Ordenar de menor a mayor   */
+
+    for (i = 0; i < iNumSNeto - 1; i++)//bucle que va de 0 a n-1 términos
+    {
+        k = 0;//La variable n nos va a permitir detectar si el proceso de ordenamiento terminó antes de n-1 repeticiones
+        for (n = 0; n < iNumSNeto - 1; n++)//bucle que va de 0 a n-1 términos
+        {
+            if (strcmp(szSuggest[n + 1], szSuggest[n]) < 0)//comparacion de ambos terminis
+            {   //si el término en n+1 es menor que el termino en n:
+               //Se cambian de lugar
+                strcpy_s(szPalabra, szSuggest[n + 1]);
+                strcpy_s(szSuggest[n + 1], szSuggest[n]);
+                strcpy_s(szSuggest[n], szPalabra);
+            }
+            else//en caso de no ser menor se le agrega una unidad a la variable n
+                k += 1;
+        }
+        if (k == iNumSNeto - 1)//cuando la variable n tenga el mismo valor que terminos-1 el arreglo se ha ordenado
+            i = iNumSNeto - 1;//y por lo tanto el proceso puede terminarse
+    }
+
+
+
+    iNumSugeridas = iNumSNeto;
+
+    /* Comparar la lista de clonados con el diccionario */
+    for (i = 0; i < iNumSugeridas; i++)
+    {
+        for (n = 0; n < iNumElementos; n++)
+        {
+            if (strcmp(szSuggest[i], szPalabras[n]) == 0)
+            {
+                strcpy_s(szListaFinal[iNumLista], szSuggest[i]);
+                iPeso[iNumLista] = iEstadisticas[n];
+                iNumLista++;
+            }
+        }
+    }
+
+    for (i = 0; i < iNumLista - 1; i++)//bucle que va de 0 a n-1 términos
+    {
+        j = 0;//La variable n nos va a permitir detectar si el proceso de ordenamiento terminó antes de n-1 repeticiones
+        for (n = 0; n < iNumLista - 1; n++)//bucle que va de 0 a n-1 términos
+        {
+            if (iPeso[n + 1] > iPeso[n])//comparacion de ambos terminis
+            {   //si el término en n+1 es menor que el termino en n:
+               //Se cambian de lugar
+                iControl = iPeso[n + 1];
+                strcpy_s(szPalabra, szListaFinal[n + 1]);
+
+                iPeso[n + 1] = iPeso[n];
+                strcpy_s(szListaFinal[n + 1], szListaFinal[n]);
+
+                iPeso[n] = iControl;
+                strcpy_s(szListaFinal[n], szPalabra);
+            }
+            else//en caso de no ser menor se le agrega una unidad a la variable n
+                j += 1;
+        }
+        if (j == iNumLista - 1)//cuando la variable n tenga el mismo valor que terminos-1 el arreglo se ha ordenado
+            i = iNumLista - 1;//y por lo tanto el proceso puede terminarse
+    }
+
+    //Sustituya estas lineas por su código
+    /*strcpy(szListaFinal[0], szPalabrasSugeridas[0]); //la palabra candidata
+    iPeso[0] = iEstadisticas[0];			// el peso de la palabra candidata
+
+    iNumLista = 1;							//Una sola palabra candidata    */
+}
+
+/*****************************************************************************************************************
+    ClonaPalabras: toma una palabra y obtiene todas las combinaciones y permutaciones requeridas por el metodo
+    char *	szPalabraLeida,						// Palabra a clonar
+    char	szPalabrasSugeridas[][TAMTOKEN], 	//Lista de palabras clonadas
+    int &	iNumSugeridas)						//Numero de elementos en la lista
+******************************************************************************************************************/
+void	ClonaPalabras(
+    char* szPalabraLeida,						// Palabra a clonar
+    char	szPalabrasSugeridas[NUMPALABRAS][TAMTOKEN], 	//Lista de palabras clonadas
+    int& iNumSugeridas)						//Numero de elementos en la lista
+{
+    //Declaración de las variables a utilizar
+    int iNumRep;
+    char szLetras[32] = { 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','ñ','o','p','q','r','s','t','u','v','w','x','y','z','á','é','í','ó','ú' };
+    char szPalabra[TAMTOKEN];
+    char szSuggest[NUMPALABRAS][TAMTOKEN];
+    int bLogrep;
+    int m_a[NUMPALABRAS];
+    int iNumSNeto;
+    int iSize, i, j, n, k;
+    char control;
+
+
+    //strcpy_s(szPalabra, szPalabraLeida);
+
+    iNumSNeto = 0;
+    iSize = strlen(szPalabraLeida);
+
+    strcpy_s(szSuggest[iNumSNeto], szPalabraLeida);
+    iNumSNeto++;
+
+    if (iSize > 1)
+    {
+        /* 1. Eliminacion */
+        for (i = 0; i < iSize; i++)
+        {
+            k = 0;
+            for (n = 0; n < iSize + 1; n++)
+            {
+                if ((n != i) && (n != iSize))
+                {
+                    control = szPalabraLeida[n];
+                    szSuggest[iNumSNeto][k] = control;
+                    k++;
+                }
+                if (n == iSize)
+                {
+                    szSuggest[iNumSNeto][k] = '\0';
+                    iNumSNeto++;
+                }
+            }
+        }
+
+
+        /* 2. Inercambio contiguo */
+
+        for (i = 0; i < iSize - 1; i++)
+        {
+            strcpy_s(szSuggest[iNumSNeto], szPalabraLeida);
+            control = szSuggest[iNumSNeto][i];
+            szSuggest[iNumSNeto][i] = szSuggest[iNumSNeto][i + 1];
+            szSuggest[iNumSNeto][i + 1] = control;
+            iNumSNeto++;
+        }
+
+    }
     /* 3
     */
         else
